@@ -1,0 +1,858 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Smart College Analysis & Prediction System</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Source+Sans+3:wght@300;400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --bg: #f8f8f6;
+        --surface: #ffffff;
+        --border: #e2e2dc;
+        --border2: #cdcdc5;
+        --navy: #1b2a4a;
+        --blue: #2c5282;
+        --accent: #2b6cb0;
+        --accent-lt: #ebf4ff;
+        --text: #1a1a1a;
+        --muted: #6b7280;
+        --subtle: #9ca3af;
+        --success: #1a6b3a;
+        --success-bg: #f0fbf4;
+        --danger: #9b1c1c;
+        --danger-bg: #fef2f2;
+        --warning: #92400e;
+        --warning-bg: #fffbeb;
+      }
+
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        background: var(--bg);
+        color: var(--text);
+        font-family: "Source Sans 3", sans-serif;
+        font-weight: 400;
+        min-height: 100vh;
+        display: flex;
+        align-items: flex-start;
+        justify-content: center;
+        padding: 48px 20px 60px;
+      }
+
+      body::before {
+        content: "";
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: linear-gradient(
+          90deg,
+          var(--navy) 0%,
+          var(--accent) 50%,
+          var(--navy) 100%
+        );
+      }
+
+      .page {
+        width: 100%;
+        max-width: 640px;
+        animation: fadeUp 0.5s ease both;
+      }
+
+      @keyframes fadeUp {
+        from {
+          opacity: 0;
+          transform: translateY(16px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      /* ── HEADER ──────────────────────────────────────── */
+      .site-header {
+        text-align: center;
+        margin-bottom: 32px;
+        padding-bottom: 28px;
+        border-bottom: 1px solid var(--border);
+      }
+
+      .institution-tag {
+        display: inline-block;
+        font-size: 11px;
+        font-weight: 600;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: var(--accent);
+        margin-bottom: 14px;
+      }
+
+      h1 {
+        font-family: "Libre Baskerville", serif;
+        font-size: 27px;
+        font-weight: 700;
+        color: var(--navy);
+        line-height: 1.25;
+        letter-spacing: -0.01em;
+        margin-bottom: 10px;
+      }
+
+      .tagline {
+        font-size: 14px;
+        color: var(--muted);
+        line-height: 1.65;
+        max-width: 440px;
+        margin: 0 auto;
+      }
+
+      /* ── STAT ROW ────────────────────────────────────── */
+      .stat-row {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 12px;
+        margin-bottom: 20px;
+      }
+
+      .stat-item {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        padding: 14px;
+        text-align: center;
+      }
+
+      .stat-val {
+        font-family: "Libre Baskerville", serif;
+        font-size: 20px;
+        font-weight: 700;
+        color: var(--navy);
+      }
+
+      .stat-lbl {
+        font-size: 11px;
+        color: var(--subtle);
+        margin-top: 3px;
+      }
+
+      /* ── CARD ────────────────────────────────────────── */
+      .card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 36px 40px;
+        box-shadow:
+          0 1px 4px rgba(0, 0, 0, 0.05),
+          0 4px 16px rgba(0, 0, 0, 0.03);
+      }
+
+      .card-title {
+        font-family: "Libre Baskerville", serif;
+        font-size: 15px;
+        font-weight: 700;
+        color: var(--navy);
+        margin-bottom: 24px;
+        padding-bottom: 14px;
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .card-icon {
+        width: 30px;
+        height: 30px;
+        background: var(--accent-lt);
+        border-radius: 6px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 15px;
+      }
+
+      /* ── FORM ────────────────────────────────────────── */
+      .form-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px 24px;
+        margin-bottom: 24px;
+      }
+
+      .field-full {
+        grid-column: 1 / -1;
+      }
+
+      .field {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+
+      label {
+        font-size: 11.5px;
+        font-weight: 600;
+        letter-spacing: 0.07em;
+        text-transform: uppercase;
+        color: var(--muted);
+      }
+
+      .input-wrap {
+        position: relative;
+      }
+
+      .input-unit {
+        position: absolute;
+        right: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 12px;
+        color: var(--subtle);
+        font-weight: 500;
+        pointer-events: none;
+      }
+
+      input[type="number"] {
+        width: 100%;
+        background: var(--bg);
+        border: 1px solid var(--border2);
+        border-radius: 5px;
+        padding: 10px 48px 10px 14px;
+        color: var(--text);
+        font-family: "Source Sans 3", sans-serif;
+        font-size: 15px;
+        font-weight: 500;
+        transition:
+          border-color 0.15s,
+          box-shadow 0.15s,
+          background 0.15s;
+        outline: none;
+        -moz-appearance: textfield;
+        appearance: textfield;
+      }
+
+      input[type="number"]::-webkit-inner-spin-button,
+      input[type="number"]::-webkit-outer-spin-button {
+        -webkit-appearance: none;
+      }
+
+      input[type="number"]:focus {
+        border-color: var(--accent);
+        background: var(--surface);
+        box-shadow: 0 0 0 3px rgba(43, 108, 176, 0.1);
+      }
+
+      input[type="number"]::placeholder {
+        color: var(--subtle);
+        font-weight: 300;
+      }
+
+      .field-hint {
+        font-size: 11px;
+        color: var(--subtle);
+      }
+
+      /* ── LIVE PREVIEW ────────────────────────────────── */
+      .score-preview {
+        display: none;
+        background: var(--accent-lt);
+        border: 1px solid #bee3f8;
+        border-radius: 6px;
+        padding: 14px 18px;
+        margin-bottom: 20px;
+      }
+
+      .preview-row {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+      }
+
+      .preview-left .preview-lbl {
+        font-size: 10.5px;
+        font-weight: 600;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--accent);
+        margin-bottom: 2px;
+      }
+
+      .preview-left .preview-score {
+        font-family: "Libre Baskerville", serif;
+        font-size: 22px;
+        font-weight: 700;
+        color: var(--navy);
+      }
+
+      .preview-right {
+        flex: 1;
+      }
+
+      .bar-track {
+        height: 5px;
+        background: #bee3f8;
+        border-radius: 3px;
+        overflow: hidden;
+        margin-bottom: 5px;
+      }
+
+      .bar-fill {
+        height: 100%;
+        border-radius: 3px;
+        transition:
+          width 0.5s ease,
+          background 0.3s;
+      }
+
+      .bar-labels {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .bar-risk {
+        font-size: 11.5px;
+        font-weight: 600;
+      }
+
+      /* ── BUTTON ──────────────────────────────────────── */
+      .btn-submit {
+        width: 100%;
+        padding: 13px;
+        background: var(--navy);
+        color: #ffffff;
+        border: none;
+        border-radius: 5px;
+        font-family: "Source Sans 3", sans-serif;
+        font-size: 13.5px;
+        font-weight: 600;
+        letter-spacing: 0.07em;
+        text-transform: uppercase;
+        cursor: pointer;
+        transition:
+          background 0.15s,
+          transform 0.1s,
+          box-shadow 0.15s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+      }
+
+      .btn-submit:hover {
+        background: var(--blue);
+        box-shadow: 0 4px 14px rgba(27, 42, 74, 0.22);
+        transform: translateY(-1px);
+      }
+
+      .btn-submit:active {
+        transform: translateY(0);
+      }
+
+      /* ── RESULT ──────────────────────────────────────── */
+      .result-wrap {
+        margin-top: 24px;
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        overflow: hidden;
+        animation: fadeUp 0.4s ease both;
+      }
+
+      .result-top {
+        background: var(--navy);
+        padding: 11px 20px;
+        font-size: 11px;
+        font-weight: 600;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: #ffffff;
+      }
+
+      .result-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        background: var(--surface);
+      }
+
+      .result-cell {
+        padding: 22px 24px 18px;
+      }
+
+      .result-cell:first-child {
+        border-right: 1px solid var(--border);
+      }
+
+      .result-cell-lbl {
+        font-size: 10.5px;
+        font-weight: 600;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--muted);
+        margin-bottom: 8px;
+      }
+
+      .result-val {
+        font-family: "Libre Baskerville", serif;
+        font-size: 24px;
+        font-weight: 700;
+      }
+
+      .result-val.pass {
+        color: var(--success);
+      }
+      .result-val.fail {
+        color: var(--danger);
+      }
+      .result-val.low {
+        color: var(--success);
+      }
+      .result-val.medium {
+        color: var(--warning);
+      }
+      .result-val.high {
+        color: var(--danger);
+      }
+
+      .result-note {
+        margin-top: 6px;
+        font-size: 11.5px;
+        color: var(--muted);
+      }
+
+      .result-badge {
+        display: inline-block;
+        margin-top: 8px;
+        padding: 3px 10px;
+        border-radius: 100px;
+        font-size: 11px;
+        font-weight: 600;
+      }
+
+      .badge-pass {
+        background: var(--success-bg);
+        color: var(--success);
+      }
+      .badge-fail {
+        background: var(--danger-bg);
+        color: var(--danger);
+      }
+      .badge-low {
+        background: var(--success-bg);
+        color: var(--success);
+      }
+      .badge-medium {
+        background: var(--warning-bg);
+        color: var(--warning);
+      }
+      .badge-high {
+        background: var(--danger-bg);
+        color: var(--danger);
+      }
+
+      .result-bar-row {
+        background: var(--bg);
+        border-top: 1px solid var(--border);
+        padding: 12px 20px;
+        display: flex;
+        align-items: center;
+        gap: 14px;
+      }
+
+      .result-bar-lbl {
+        font-size: 11px;
+        color: var(--muted);
+        white-space: nowrap;
+      }
+
+      .result-bar-track {
+        flex: 1;
+        height: 4px;
+        background: var(--border);
+        border-radius: 2px;
+        overflow: hidden;
+      }
+
+      .result-bar-fill {
+        height: 100%;
+        border-radius: 2px;
+      }
+      .result-bar-fill.low {
+        width: 22%;
+        background: var(--success);
+      }
+      .result-bar-fill.medium {
+        width: 58%;
+        background: #d97706;
+      }
+      .result-bar-fill.high {
+        width: 88%;
+        background: var(--danger);
+      }
+
+      /* ── RESET ───────────────────────────────────────── */
+      .btn-reset {
+        display: block;
+        width: 100%;
+        margin-top: 10px;
+        padding: 10px;
+        background: transparent;
+        border: 1px solid var(--border2);
+        border-radius: 5px;
+        color: var(--muted);
+        font-family: "Source Sans 3", sans-serif;
+        font-size: 13px;
+        cursor: pointer;
+        transition:
+          border-color 0.15s,
+          color 0.15s;
+        text-align: center;
+      }
+
+      .btn-reset:hover {
+        border-color: var(--navy);
+        color: var(--navy);
+      }
+
+      /* ── FOOTER ──────────────────────────────────────── */
+      .site-footer {
+        text-align: center;
+        margin-top: 28px;
+        font-size: 11.5px;
+        color: var(--subtle);
+        padding-top: 20px;
+        border-top: 1px solid var(--border);
+        line-height: 1.7;
+      }
+
+      @media (max-width: 520px) {
+        .card {
+          padding: 24px 18px;
+        }
+        .form-grid {
+          grid-template-columns: 1fr;
+        }
+        .result-grid {
+          grid-template-columns: 1fr;
+        }
+        .result-cell:first-child {
+          border-right: none;
+          border-bottom: 1px solid var(--border);
+        }
+        h1 {
+          font-size: 22px;
+        }
+        .stat-row {
+          grid-template-columns: repeat(3, 1fr);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page">
+      <!-- Header -->
+      <header class="site-header">
+        <div class="institution-tag">MCE Academic Intelligence System</div>
+        <h1>Smart College Analytics<br />&amp; Prediction System</h1>
+      </header>
+
+      <!-- Stats -->
+      <div class="stat-row">
+        <div class="stat-item">
+          <div class="stat-val">92%</div>
+          <div class="stat-lbl">Model Accuracy</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-val">10,000</div>
+          <div class="stat-lbl">Training Records</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-val">5</div>
+          <div class="stat-lbl">Input Features</div>
+        </div>
+      </div>
+
+      <!-- Main Card -->
+      <div class="card">
+        <div class="card-title">
+          <div class="card-icon">📋</div>
+          Student Academic Metrics
+        </div>
+
+        <form method="POST" id="predictForm">
+          <div class="form-grid">
+            <div class="field field-full">
+              <label for="attendance">Attendance</label>
+              <div class="input-wrap">
+                <input
+                  type="number"
+                  id="attendance"
+                  name="attendance"
+                  min="0"
+                  max="100"
+                  step="1"
+                  placeholder="0 – 100"
+                  required
+                />
+                <span class="input-unit">/ 100 %</span>
+              </div>
+              <span class="field-hint"
+                >Attendance percentage for the current semester</span
+              >
+            </div>
+
+            <div class="field">
+              <label for="midsem">Mid-Semester Marks</label>
+              <div class="input-wrap">
+                <input
+                  type="number"
+                  id="midsem"
+                  name="midsem"
+                  min="0"
+                  max="20"
+                  step="0.5"
+                  placeholder="0 – 20"
+                  required
+                />
+                <span class="input-unit">/ 20</span>
+              </div>
+              <span class="field-hint">Out of 20 marks</span>
+            </div>
+
+            <div class="field">
+              <label for="gpa">GPA</label>
+              <div class="input-wrap">
+                <input
+                  type="number"
+                  id="gpa"
+                  name="gpa"
+                  min="0"
+                  max="10"
+                  step="0.01"
+                  placeholder="0.00 – 10.00"
+                  required
+                />
+                <span class="input-unit">/ 10</span>
+              </div>
+              <span class="field-hint">Current grade point average</span>
+            </div>
+
+            <div class="field">
+              <label for="assignment">Assignment Score</label>
+              <div class="input-wrap">
+                <input
+                  type="number"
+                  id="assignment"
+                  name="assignment"
+                  min="0"
+                  max="5"
+                  step="0.5"
+                  placeholder="0 – 5"
+                  required
+                />
+                <span class="input-unit">/ 5</span>
+              </div>
+              <span class="field-hint">Out of 5 marks</span>
+            </div>
+
+            <div class="field">
+              <label for="quiz">Quiz Score</label>
+              <div class="input-wrap">
+                <input
+                  type="number"
+                  id="quiz"
+                  name="quiz"
+                  min="0"
+                  max="5"
+                  step="0.5"
+                  placeholder="0 – 5"
+                  required
+                />
+                <span class="input-unit">/ 5</span>
+              </div>
+              <span class="field-hint">Out of 5 marks</span>
+            </div>
+          </div>
+
+          <!-- Live Risk Preview -->
+          <div id="scorePreview" class="score-preview">
+            <div class="preview-row">
+              <div class="preview-left">
+                <div class="preview-lbl">Live Risk Score</div>
+                <div class="preview-score" id="scoreVal">—</div>
+              </div>
+              <div class="preview-right">
+                <div class="bar-track">
+                  <div class="bar-fill" id="scoreBar" style="width: 0%"></div>
+                </div>
+                <div class="bar-labels">
+                  <span style="font-size: 10px; color: var(--subtle)">Low</span>
+                  <span class="bar-risk" id="scoreRisk"></span>
+                  <span style="font-size: 10px; color: var(--subtle)"
+                    >High</span
+                  >
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <button type="submit" class="btn-submit">
+            <svg
+              width="15"
+              height="15"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
+            </svg>
+            Analyse &amp; Predict Performance
+          </button>
+        </form>
+
+        <!-- Jinja2 Result Block -->
+        {% if prediction %}
+        <div class="result-wrap">
+          <div class="result-top">📊 &nbsp; Prediction Result</div>
+          <div class="result-grid">
+            <div class="result-cell">
+              <div class="result-cell-lbl">Performance Prediction</div>
+              <div
+                class="result-val {% if prediction == 'Pass' %}pass{% else %}fail{% endif %}"
+              >
+                {% if prediction == 'Pass' %}✓{% else %}✗{% endif %}&nbsp;{{
+                prediction }}
+              </div>
+              <div class="result-note">
+                {% if prediction == 'Pass' %}Student is likely to pass the final
+                examination.{% else %}Student is at risk of failing the final
+                examination.{% endif %}
+              </div>
+              <span
+                class="result-badge {% if prediction == 'Pass' %}badge-pass{% else %}badge-fail{% endif %}"
+              >
+                {% if prediction == 'Pass' %}Predicted Pass{% else %}Predicted
+                Fail{% endif %}
+              </span>
+            </div>
+            <div class="result-cell">
+              <div class="result-cell-lbl">Risk Classification</div>
+              <div
+                class="result-val {% if 'Low' in risk %}low{% elif 'Medium' in risk %}medium{% else %}high{% endif %}"
+              >
+                {{ risk }}
+              </div>
+              <div class="result-note">
+                {% if 'Low' in risk %}No immediate intervention required.{% elif
+                'Medium' in risk %}Monitor student closely and provide
+                support.{% else %}Immediate academic intervention is required.{%
+                endif %}
+              </div>
+              <span
+                class="result-badge {% if 'Low' in risk %}badge-low{% elif 'Medium' in risk %}badge-medium{% else %}badge-high{% endif %}"
+              >
+                {% if 'Low' in risk %}Low Risk{% elif 'Medium' in risk %}Medium
+                Risk{% else %}High Risk{% endif %}
+              </span>
+            </div>
+          </div>
+          <div class="result-bar-row">
+            <span class="result-bar-lbl">Risk Severity</span>
+            <div class="result-bar-track">
+              <div
+                class="result-bar-fill {% if 'Low' in risk %}low{% elif 'Medium' in risk %}medium{% else %}high{% endif %}"
+              ></div>
+            </div>
+            <span class="result-bar-lbl">
+              {% if 'Low' in risk %}Low{% elif 'Medium' in risk %}Moderate{%
+              else %}High{% endif %}
+            </span>
+          </div>
+        </div>
+
+        <button class="btn-reset" onclick="window.location.href = '/'">
+          ↺ &nbsp; Start New Prediction
+        </button>
+        {% endif %}
+      </div>
+
+      <!-- Footer -->
+      <footer class="site-footer">
+        Predictions are generated by a Random Forest classifier trained on
+        10,000 student records (92% accuracy).<br />
+        Results are indicative and should be considered alongside other academic
+        factors.
+      </footer>
+    </div>
+
+    <script>
+      const cfg = {
+        attendance: [100, 30],
+        midsem: [20, 35],
+        assignment: [5, 15],
+        quiz: [5, 10],
+        gpa: [10, 10],
+      };
+
+      function computeScore() {
+        let score = 0,
+          filled = 0;
+        for (const [id, [max, w]] of Object.entries(cfg)) {
+          const v = parseFloat(document.getElementById(id).value);
+          if (!isNaN(v)) {
+            score += (v / max) * w;
+            filled++;
+          }
+        }
+        return filled >= 3 ? Math.min(100, Math.max(0, score)) : null;
+      }
+
+      function updatePreview() {
+        const score = computeScore();
+        const preview = document.getElementById("scorePreview");
+        if (score === null) {
+          preview.style.display = "none";
+          return;
+        }
+        preview.style.display = "block";
+
+        document.getElementById("scoreVal").textContent =
+          score.toFixed(1) + " / 100";
+
+        const bar = document.getElementById("scoreBar");
+        const risk = document.getElementById("scoreRisk");
+        bar.style.width = score.toFixed(1) + "%";
+
+        if (score >= 70) {
+          bar.style.background = "var(--success)";
+          risk.textContent = "🟢 Low Risk";
+          risk.style.color = "var(--success)";
+        } else if (score >= 50) {
+          bar.style.background = "#D97706";
+          risk.textContent = "🟡 Medium Risk";
+          risk.style.color = "var(--warning)";
+        } else {
+          bar.style.background = "var(--danger)";
+          risk.textContent = "🔴 High Risk";
+          risk.style.color = "var(--danger)";
+        }
+      }
+
+      Object.keys(cfg).forEach((id) =>
+        document.getElementById(id).addEventListener("input", updatePreview),
+      );
+    </script>
+  </body>
+</html>
